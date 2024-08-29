@@ -16,7 +16,7 @@ type PostRenderer struct {
 }
 
 var (
-	//go:embed "templates/*"	
+	//go:embed "templates/*"
 	postTemplates embed.FS
 )
 
