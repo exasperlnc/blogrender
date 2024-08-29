@@ -19,10 +19,16 @@ var (
 	)
 func TestRender(t *testing.T) {	
 
+	postRenderer, err := blogrender.NewPostRender()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	t.Run("it converts a single post into HTML", func(t *testing.T) {
 		buf := bytes.Buffer{}
 
-		if err := blogrender.Render(&buf, aPost); err != nil {
+		if err := postRenderer.Render(&buf, aPost); err != nil {
 			t.Fatal(err)
 		}
 
@@ -31,8 +37,14 @@ func TestRender(t *testing.T) {
 }
 
 func BenchmarkRender(b *testing.B) {
+	postRenderer, err := blogrender.NewPostRender()
+
+	if err != nil {
+		b.Fatal(err)
+	}
+	
 	b.ResetTimer()
 	for i:= 0; i < b.N; i++ {
-		blogrender.Render(io.Discard, aPost)
+		postRenderer.Render(io.Discard, aPost)
 	}
 }

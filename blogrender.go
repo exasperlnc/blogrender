@@ -10,19 +10,29 @@ type Post struct {
 	Title, Description, Body string
 	Tags 										 []string
 }
+
+type PostRenderer struct {
+	templ *template.Template
+}
+
 var (
 	//go:embed "templates/*"	
 	postTemplates embed.FS
 )
-func Render(w io.Writer, p Post) error {
-	tmpl, err := template.ParseFS(postTemplates, "templates/*.gohtml")
+
+func NewPostRender() (*PostRenderer, error) {
+	templ, err := template.ParseFS(postTemplates, "templates/*.gohtml")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := tmpl.ExecuteTemplate(w, "blog.gohtml", p); err != nil {
+	return &PostRenderer{templ: templ}, nil
+}
+
+func (r* PostRenderer) Render(w io.Writer, p Post) error {
+	
+	if err := r.templ.ExecuteTemplate(w, "blog.gohtml", p); err != nil {
 		return err
 	}
-
 	return nil
 }
