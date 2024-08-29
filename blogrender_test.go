@@ -2,14 +2,14 @@ package blogrender_test
 
 import (
 	"bytes"
+	"io"
 	"testing"
-	"github.com/exasperlnc/blogrender"
+
 	"github.com/approvals/go-approval-tests"
+	"github.com/exasperlnc/blogrender"
 )
 
-
-func TestRender(t *testing.T) {
-	var ( 
+var ( 
 		aPost = blogrender.Post{
 			Title: "hello world",
 			Body: "This is a post",
@@ -17,6 +17,7 @@ func TestRender(t *testing.T) {
 			Tags: []string{"go", "tdd"},
 		}
 	)
+func TestRender(t *testing.T) {	
 
 	t.Run("it converts a single post into HTML", func(t *testing.T) {
 		buf := bytes.Buffer{}
@@ -27,4 +28,11 @@ func TestRender(t *testing.T) {
 
 		approvals.VerifyString(t, buf.String())
 	})
+}
+
+func BenchmarkRender(b *testing.B) {
+	b.ResetTimer()
+	for i:= 0; i < b.N; i++ {
+		blogrender.Render(io.Discard, aPost)
+	}
 }
